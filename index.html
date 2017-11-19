@@ -1,129 +1,129 @@
 
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>Simple sound synthesis</title>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
-		<link rel="stylesheet" type="text/css" href="./css/my_style.css">
-        <link rel="icon" href="./icon.png">
-	</head>
-	<body ng-app="SoundImageApp" ng-controller="MainController as MainCtrl">
-		<div layout="column">
-			<md-toolbar id="app-toolbar">
-				<div class="md-toolbar-tools">
-					<h2>
-						<span>Play here to synthesize sounds ;-)</span>
-					</h2>
-				</div>
-			</md-toolbar>
-			<md-content id="main-content" flex>
-				<md-content style="margin: 16px; padding:16px;">
-					<div id="visualize" layout layout-align="center center">
-						<canvas id="visualisationTarget" ></canvas>
-					</div>
-				</md-content>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Simple sound synthesis</title>
+    <link rel="stylesheet" href="./ext/font-awesome.min.css">
+    <link rel="stylesheet" href="./ext/angular-material.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/my_style.css">
+    <link rel="icon" href="./icon.png">
+  </head>
+  <body ng-app="SoundImageApp" ng-controller="MainController as MainCtrl">
+    <div layout="column">
+      <md-toolbar id="app-toolbar">
+	<div class="md-toolbar-tools">
+	  <h2>
+	    <span>Play here to synthesize sounds ;-)</span>
+	  </h2>
+	</div>
+      </md-toolbar>
+      <md-content id="main-content" flex>
+	<md-content style="margin: 16px; padding:16px;">
+	  <div id="visualize" layout layout-align="center center">
+	    <canvas id="visualisationTarget" ></canvas>
+	  </div>
+	</md-content>
 
-				<md-content style="margin: 16px; padding:16px;">
-					<div layout layout-align="center center">
-						<md-radio-group ng-model="MainCtrl.synthesis_mode" layout-align="center center" ng-change="MainCtrl.update_sythesis_mode()">
-							<md-radio-button value="sin" class="md-primary">Sinus Synthesis</md-radio-button>
-							<md-radio-button value="add" class="md-primary">Additive Synthesis</md-radio-button>
-							<md-radio-button value="am" class="md-primary">Amplitude Modulation</md-radio-button>
-							<md-radio-button value="fm" class="md-primary">Frequency Modulation</md-radio-button>
-						</md-radio-group>
-					</div>
-					<div layout>
-						<div flex="10" layout layout-align="center center">
-							<span class="md-primary md-body-1" ng-if="MainCtrl.synthesis_mode != 'add'">FC</span>
-							<span class="md-primary md-body-1" ng-if="MainCtrl.synthesis_mode == 'add'">F1</span>
-						</div>
-						<md-slider flex min="0" max="20000"  ng-model="MainCtrl.carrierFrequency" ng-change="MainCtrl.update_sound()" aria-label="fc" id="fc-slider" class="md-primary">
-						</md-slider>
-						<div flex="20" layout layout-align="center center">
-							<input flex type="number" ng-model="MainCtrl.carrierFrequency" ng-change="MainCtrl.update_sound()" aria-label="fc" aria-controls="fc-slider">
-						</div>
-					</div>
-					<div layout ng-if="MainCtrl.synthesis_mode == 'am' || MainCtrl.synthesis_mode == 'fm' || MainCtrl.synthesis_mode == 'add'">
-						<div flex="10" layout layout-align="center center" >
-							<span class="md-primary md-body-1" ng-if="MainCtrl.synthesis_mode != 'add'">FM</span>
-							<span class="md-primary md-body-1" ng-if="MainCtrl.synthesis_mode == 'add'">F2</span>
-						</div>
-						<md-slider flex ng-model="MainCtrl.frequencyModulating" ng-change="MainCtrl.update_sound()" min="0" max="20000" aria-label="fm" id="fm-slider" class="md-primary">
-						</md-slider>
-						<div flex="20" layout layout-align="center center">
-							<input flex type="number" ng-model="MainCtrl.frequencyModulating" ng-change="MainCtrl.update_sound()" aria-label="fm" aria-controls="fm-slider">
-						</div>
-					</div>
-					<div layout ng-if="MainCtrl.synthesis_mode != 'shepard'">
-						<div flex="10" layout layout-align="center center">
-							<span class="md-primary md-body-1" ng-if="MainCtrl.synthesis_mode != 'add'">A</span>
-							<span class="md-primary md-body-1" ng-if="MainCtrl.synthesis_mode == 'add'">A1</span>
-						</div>
-						<md-slider flex ng-model="MainCtrl.amplitude" ng-change="MainCtrl.update_sound();" min="0" max="1" step="0.01" aria-label="a" id="a-slider" class="md-primary">
-						</md-slider>
-						<div flex="20" layout layout-align="center center">
-							<input flex type="number" ng-model="MainCtrl.amplitude" ng-change="MainCtrl.update_sound();" aria-label="a" aria-controls="a-slider">
-						</div>
-					</div>
-					<div layout ng-if="MainCtrl.synthesis_mode == 'add'">
-						<div flex="10" layout layout-align="center center">
-							<span class="md-primary md-body-1">A2</span>
-						</div>
-						<md-slider flex ng-model="MainCtrl.amplitude2" ng-change="MainCtrl.update_sound();" min="0" max="1" step="0.01" aria-label="a" id="a-slider" class="md-primary">
-						</md-slider>
-						<div flex="20" layout layout-align="center center">
-							<input flex type="number" ng-model="MainCtrl.amplitude2" ng-change="MainCtrl.update_sound();" aria-label="a" aria-controls="a-slider">
-						</div>
-					</div>
-					<div layout ng-if="MainCtrl.synthesis_mode == 'am'">
-						<div flex="10" layout layout-align="center center">
-							<span class="md-primary md-body-1">C</span>
-						</div>
-						<md-slider flex ng-model="MainCtrl.c" ng-change="MainCtrl.update_sound();" min="0" max="1" step="0.01" aria-label="c" id="c-slider" class="md-primary">
-						</md-slider>
-						<div flex="20" layout layout-align="center center">
-							<input flex type="number" ng-model="MainCtrl.c" ng-change="MainCtrl.update_sound();" aria-label="c" aria-controls="c-slider">
-						</div>
-					</div>
-					<div layout ng-if="MainCtrl.synthesis_mode == 'fm'">
-						<div flex="10" layout layout-align="center center" >
-							<span class="md-primary md-body-1">I</span>
-						</div>
-						<md-slider flex ng-model="MainCtrl.I" ng-change="MainCtrl.update_sound();" min="0" max="999" aria-label="i" id="i-slider" class="md-primary">
-						</md-slider>
-						<div flex="20" layout layout-align="center center">
-							<input flex type="number" ng-model="MainCtrl.I" ng-change="MainCtrl.update_sound();" aria-label="i" aria-controls="i-slider">
-						</div>
-					</div>
-					<div layout="row" layout-align="center center">
-						<md-button ng-click="MainCtrl.play()" class="md-fab md-primary" aria-label="Play audio Synthesis">
-						<md-icon md-svg-src="img/icons/play.svg"></md-icon>
-						</md-button>
-						<md-button ng-click="MainCtrl.stop()" class="md-fab" aria-label="Stop Audio Synthesis">
-							<md-icon md-svg-src="img/icons/stop.svg"></md-icon>
-						</md-button>
-					</div>
-				</md-content>
-			</md-content>
-			<md-toolbar id="app-footer">
-				<div class="md-toolbar-tools" layout layout-align="space-around center">
-					<span style ="font-size: 70%;"><strong>Made by Arnaud Delpeyroux with </strong><i class="fa fa-heart" style="color:red; font-size: 150%;"></i></span>
-					<span style ="font-size: 70%;"><strong>You can find my code on : </strong><a href="https://github.com/Foxnox/simple-sound-synthesis"><i class="fa fa-github-alt" style="font-size: 150%"></i></a></span>
-				</div>
-			</md-toolbar>
-		</div>
-        <script src="./audio_libs/soundVisualizer.js"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+	<md-content style="margin: 16px; padding:16px;">
+	  <div layout layout-align="center center">
+	    <md-radio-group ng-model="MainCtrl.synthesis_mode" layout-align="center center" ng-change="MainCtrl.update_sythesis_mode()">
+	      <md-radio-button value="sin" class="md-primary">Sinus Synthesis</md-radio-button>
+	      <md-radio-button value="add" class="md-primary">Additive Synthesis</md-radio-button>
+	      <md-radio-button value="am" class="md-primary">Amplitude Modulation</md-radio-button>
+	      <md-radio-button value="fm" class="md-primary">Frequency Modulation</md-radio-button>
+	    </md-radio-group>
+	  </div>
+	  <div layout>
+	    <div flex="10" layout layout-align="center center">
+	      <span class="md-primary md-body-1" ng-if="MainCtrl.synthesis_mode != 'add'">FC</span>
+	      <span class="md-primary md-body-1" ng-if="MainCtrl.synthesis_mode == 'add'">F1</span>
+	    </div>
+	    <md-slider flex min="0" max="20000"  ng-model="MainCtrl.carrierFrequency" ng-change="MainCtrl.update_sound()" aria-label="fc" id="fc-slider" class="md-primary">
+	    </md-slider>
+	    <div flex="20" layout layout-align="center center">
+	      <input flex type="number" ng-model="MainCtrl.carrierFrequency" ng-change="MainCtrl.update_sound()" aria-label="fc" aria-controls="fc-slider">
+	    </div>
+	  </div>
+	  <div layout ng-if="MainCtrl.synthesis_mode == 'am' || MainCtrl.synthesis_mode == 'fm' || MainCtrl.synthesis_mode == 'add'">
+	    <div flex="10" layout layout-align="center center" >
+	      <span class="md-primary md-body-1" ng-if="MainCtrl.synthesis_mode != 'add'">FM</span>
+	      <span class="md-primary md-body-1" ng-if="MainCtrl.synthesis_mode == 'add'">F2</span>
+	    </div>
+	    <md-slider flex ng-model="MainCtrl.frequencyModulating" ng-change="MainCtrl.update_sound()" min="0" max="20000" aria-label="fm" id="fm-slider" class="md-primary">
+	    </md-slider>
+	    <div flex="20" layout layout-align="center center">
+	      <input flex type="number" ng-model="MainCtrl.frequencyModulating" ng-change="MainCtrl.update_sound()" aria-label="fm" aria-controls="fm-slider">
+	    </div>
+	  </div>
+	  <div layout ng-if="MainCtrl.synthesis_mode != 'shepard'">
+	    <div flex="10" layout layout-align="center center">
+	      <span class="md-primary md-body-1" ng-if="MainCtrl.synthesis_mode != 'add'">A</span>
+	      <span class="md-primary md-body-1" ng-if="MainCtrl.synthesis_mode == 'add'">A1</span>
+	    </div>
+	    <md-slider flex ng-model="MainCtrl.amplitude" ng-change="MainCtrl.update_sound();" min="0" max="1" step="0.01" aria-label="a" id="a-slider" class="md-primary">
+	    </md-slider>
+	    <div flex="20" layout layout-align="center center">
+	      <input flex type="number" ng-model="MainCtrl.amplitude" ng-change="MainCtrl.update_sound();" aria-label="a" aria-controls="a-slider">
+	    </div>
+	  </div>
+	  <div layout ng-if="MainCtrl.synthesis_mode == 'add'">
+	    <div flex="10" layout layout-align="center center">
+	      <span class="md-primary md-body-1">A2</span>
+	    </div>
+	    <md-slider flex ng-model="MainCtrl.amplitude2" ng-change="MainCtrl.update_sound();" min="0" max="1" step="0.01" aria-label="a" id="a-slider" class="md-primary">
+	    </md-slider>
+	    <div flex="20" layout layout-align="center center">
+	      <input flex type="number" ng-model="MainCtrl.amplitude2" ng-change="MainCtrl.update_sound();" aria-label="a" aria-controls="a-slider">
+	    </div>
+	  </div>
+	  <div layout ng-if="MainCtrl.synthesis_mode == 'am'">
+	    <div flex="10" layout layout-align="center center">
+	      <span class="md-primary md-body-1">C</span>
+	    </div>
+	    <md-slider flex ng-model="MainCtrl.c" ng-change="MainCtrl.update_sound();" min="0" max="1" step="0.01" aria-label="c" id="c-slider" class="md-primary">
+	    </md-slider>
+	    <div flex="20" layout layout-align="center center">
+	      <input flex type="number" ng-model="MainCtrl.c" ng-change="MainCtrl.update_sound();" aria-label="c" aria-controls="c-slider">
+	    </div>
+	  </div>
+	  <div layout ng-if="MainCtrl.synthesis_mode == 'fm'">
+	    <div flex="10" layout layout-align="center center" >
+	      <span class="md-primary md-body-1">I</span>
+	    </div>
+	    <md-slider flex ng-model="MainCtrl.I" ng-change="MainCtrl.update_sound();" min="0" max="999" aria-label="i" id="i-slider" class="md-primary">
+	    </md-slider>
+	    <div flex="20" layout layout-align="center center">
+	      <input flex type="number" ng-model="MainCtrl.I" ng-change="MainCtrl.update_sound();" aria-label="i" aria-controls="i-slider">
+	    </div>
+	  </div>
+	  <div layout="row" layout-align="center center">
+	    <md-button ng-click="MainCtrl.play()" class="md-fab md-primary" aria-label="Play audio Synthesis">
+	      <md-icon md-svg-src="img/icons/play.svg"></md-icon>
+	    </md-button>
+	    <md-button ng-click="MainCtrl.stop()" class="md-fab" aria-label="Stop Audio Synthesis">
+	      <md-icon md-svg-src="img/icons/stop.svg"></md-icon>
+	    </md-button>
+	  </div>
+	</md-content>
+      </md-content>
+      <md-toolbar id="app-footer">
+	<div class="md-toolbar-tools" layout layout-align="space-around center">
+	  <span style ="font-size: 70%;"><strong>Made by Arnaud Delpeyroux with </strong><i class="fa fa-heart" style="color:red; font-size: 150%;"></i></span>
+	  <span style ="font-size: 70%;"><strong>You can find my code on : </strong><a href="https://github.com/Foxnox/simple-sound-synthesis"><i class="fa fa-github-alt" style="font-size: 150%"></i></a></span>
+	</div>
+      </md-toolbar>
+    </div>
+    <script src="./audio_libs/soundVisualizer.js"></script>
+    <script src="./ext/angular.min.js"></script>
+    <script src="./ext/angular-animate.min.js"></script>
+    <script src="./ext/angular-aria.min.js"></script>
 
-		<!-- Angular Material Library -->
-		<script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+    <!-- Angular Material Library -->
+    <script src="./ext/angular-material.min.js"></script>
     
-        <script src="./audio_libs/custom_audio_buffer.js"></script>
-        <script src="./audio_libs/audio_synthesis.js"></script>
-        <script src="./globals.js"></script>
-        <script src="./Controllers/MainController.js"></script>
-	</body>
+    <script src="./audio_libs/custom_audio_buffer.js"></script>
+    <script src="./audio_libs/audio_synthesis.js"></script>
+    <script src="./globals.js"></script>
+    <script src="./Controllers/MainController.js"></script>
+  </body>
 </html> 
